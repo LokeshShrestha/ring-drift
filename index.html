@@ -60,8 +60,9 @@ kbd{font:12px ui-monospace,monospace;border:1px solid var(--line);border-radius:
 <table class="keys">
 <tr><td>Look</td><td>Mouse</td></tr>
 <tr><td>Fly</td><td><kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd></td></tr>
-<tr><td>Up / down</td><td><kbd>E</kbd> / <kbd>Q</kbd></td></tr>
-<tr><td>Boost</td><td>Hold <kbd>Shift</kbd></td></tr>
+<tr><td>Up</td><td><kbd>E</kbd> or <kbd>Space</kbd></td></tr>
+<tr><td>Down</td><td><kbd>Q</kbd> or <kbd>Shift</kbd></td></tr>
+<tr><td>Boost</td><td>Hold right mouse</td></tr>
 <tr><td>Speed</td><td>Mouse wheel</td></tr>
 <tr><td>Travel menu</td><td><kbd>T</kbd></td></tr>
 <tr><td>Sun / planets</td><td><kbd>0</kbd> – <kbd>9</kbd></td></tr>
@@ -82,8 +83,8 @@ kbd{font:12px ui-monospace,monospace;border:1px solid var(--line);border-radius:
 // ---------- quality ----------
 const TOUCH = matchMedia('(pointer:coarse)').matches;
 // 0 ultra low, 1 low, 2 medium, 3 high
-let Q = 3;
-try { const s = localStorage.getItem('ringdrift-q2'); if (s !== null) Q = +s; else if ((navigator.deviceMemory || 8) <= 4 || TOUCH) Q = 1; } catch (e) {}
+let Q = (navigator.deviceMemory || 8) <= 4 ? 1 : 2; // Medium, or Low on devices with 4 GB or less
+try { const s = localStorage.getItem('ringdrift-q2'); if (s !== null) Q = +s; } catch (e) {}
 const RES = [0.45, 0.6, 0.85, 1][Q], ROCKS = [0, 1500, 3500, 6000][Q], SUB = [1, 1, 2, 2][Q], SKY = [512, 1024, 1536, 2048][Q];
 document.querySelectorAll('.q').forEach(b => {
   b.classList.toggle('on', +b.dataset.q === Q);
@@ -633,6 +634,7 @@ updClock();
 const PLANETS = ['Sun', 'Mercury', 'Venus', 'Earth', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto'];
 addEventListener('keydown', e => {
   keys[e.code] = true;
+  if (e.code === 'Space' && playing) e.preventDefault(); // don't re-click the focused Launch button
   if (e.code === 'KeyM') { setSound(!sound); updClock(); }
   if (e.code === 'KeyH') { showStats = !showStats; statsEl.style.display = showStats ? 'block' : 'none'; }
   if (e.code === 'KeyT') { document.exitPointerLock(); setPlaying(false); }
@@ -649,6 +651,10 @@ addEventListener('mousemove', e => {
   cam.yaw += e.movementX * 0.0022;
   cam.pitch = Math.max(-1.55, Math.min(1.55, cam.pitch - e.movementY * 0.0022));
 });
+// hold right mouse button to boost
+addEventListener('mousedown', e => { if (e.button === 2) keys.Mouse2 = true; });
+addEventListener('mouseup', e => { if (e.button === 2) keys.Mouse2 = false; });
+cv.addEventListener('contextmenu', e => e.preventDefault());
 addEventListener('wheel', e => { cruise = Math.max(0.05, Math.min(20, cruise * (e.deltaY < 0 ? 1.25 : 0.8))); }, { passive: true });
 // touch: drag to look, one finger flies forward, two fingers boost
 let tx = 0, ty = 0;
@@ -769,8 +775,8 @@ function frame(now) {
     if (d < near) near = d; if (d / b.R < rel) { rel = d / b.R; relI = b.i; }
     if (b.tex !== undefined) { if (d / b.R < 500) needTex(b.tex); else if (d / b.R > 5000) dropTex(b.tex); }
   }
-  const fw = (keys.KeyW || touchN > 0 ? 1 : 0) - (keys.KeyS ? 1 : 0), st = (keys.KeyD ? 1 : 0) - (keys.KeyA ? 1 : 0), up = (keys.KeyE ? 1 : 0) - (keys.KeyQ ? 1 : 0);
-  const spd = cruise * Math.max(0.02, Math.min(near * 0.5, 5e6)) * (keys.ShiftLeft || keys.ShiftRight || touchN > 1 ? 8 : 1), k = 1 - Math.exp(-dt * 3);
+  const fw = (keys.KeyW || touchN > 0 ? 1 : 0) - (keys.KeyS ? 1 : 0), st = (keys.KeyD ? 1 : 0) - (keys.KeyA ? 1 : 0), up = (keys.KeyE || keys.Space ? 1 : 0) - (keys.KeyQ || keys.ShiftLeft || keys.ShiftRight ? 1 : 0);
+  const spd = cruise * Math.max(0.02, Math.min(near * 0.5, 5e6)) * (keys.Mouse2 || touchN > 1 ? 8 : 1), k = 1 - Math.exp(-dt * 3);
   for (let i = 0; i < 3; i++) {
     cam.v[i] += ((F[i] * fw + R[i] * st + (i === 1 ? up : 0)) * spd - cam.v[i]) * k;
     cam.p[i] += cam.v[i] * dt;

@@ -42,7 +42,7 @@ Use the Solar System Scope textures (CC BY 4.0) from Wikimedia Commons (`https:/
 - Credit Solar System Scope, CC BY 4.0, in the menu.
 
 ## Controls
-- Desktop: pointer-lock mouse look, WASD, E/Q up/down, Shift boost ×8, wheel sets cruise speed. Speed scales with distance to the nearest surface; collisions keep you just above every surface.
+- Desktop: pointer-lock mouse look, WASD, E or Space up, Q or Shift down, hold right mouse button to boost ×8, wheel sets cruise speed. Speed scales with distance to the nearest surface; collisions keep you just above every surface.
 - Touch: drag to look, one finger flies forward, two fingers boost, ≡ button opens the menu. `touch-action: none` on the canvas.
 - T travel menu, 0–9 Sun and planets, R Saturn's rings view, M music, H stats (fps, resolution, speed, distance from Sun).
 - Teleporting puts the camera at ~3.2 radii, three-quarter lit, and **follows** that body as it orbits.
@@ -59,7 +59,7 @@ Use the Solar System Scope textures (CC BY 4.0) from Wikimedia Commons (`https:/
 | Low | 60% | 1500 | 3 | 8 | 1024 | 2k |
 | Medium | 85% | 3500 | 4 | 12 | 1536 | 2k |
 | High | 100% | 6000 | 5 | 16 | 2048 | 2k + sharper |
-- Default to Low on touch devices or ≤4 GB memory, else High.
+- Start on Medium, or Low when `navigator.deviceMemory` ≤ 4; remember the player's choice.
 - Dynamic resolution between 50% and 100% to hold ~60 fps.
 
 ## Music

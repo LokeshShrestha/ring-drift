@@ -24,8 +24,9 @@ Built with [Claude Code](https://claude.com/claude-code). [`MASTER_PROMPT.md`](M
 | Action | Keys | Touch |
 |---|---|---|
 | Look | Mouse | Drag |
-| Fly | W A S D, E / Q up/down | Hold one finger |
-| Boost | Hold Shift | Two fingers |
+| Fly | W A S D | Hold one finger |
+| Up / down | E or Space / Q or Shift | |
+| Boost | Hold right mouse button | Two fingers |
 | Speed | Mouse wheel | |
 | Travel menu | T | ≡ button |
 | Sun / planets | 0 – 9 | |
@@ -42,7 +43,7 @@ Built with [Claude Code](https://claude.com/claude-code). [`MASTER_PROMPT.md`](M
 | Medium | 85% | 3,500 | 2k |
 | High | 100% | 6,000 | sharper Earth, Moon, Sun, Jupiter, Saturn |
 
-Resolution also scales down on its own to hold about 60 fps.
+It starts on Medium (Low on devices with 4 GB of memory or less); pick another level in the menu (your choice is remembered). Resolution also scales down on its own to hold about 60 fps.
 
 ## How it works
 

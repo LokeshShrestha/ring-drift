@@ -2,7 +2,7 @@
 
 A true-to-scale solar system you can fly through in the browser. One HTML file, no build step, no libraries.
 
-**Live:** https://REPLACE_USER.github.io/ring-drift/
+**Live:** https://lokeshshrestha.github.io/ring-drift/
 
 Built with [Claude Code](https://claude.com/claude-code). [`MASTER_PROMPT.md`](MASTER_PROMPT.md) is a single prompt written to rebuild the whole thing in one go.
 

@@ -211,6 +211,7 @@ const TXU = new Float32Array(NB * 2).fill(-1); // per body: map id, map width
 const NEAR = 0.05, FAR = 200000;
 const HEAD = `#version 300 es
 precision highp float;
+precision highp int; // fragment default int is mediump; must match vertex highp or some GPUs fail to link
 #define Q ${Q}
 #define OCT ${[2, 3, 4, 5][Q]}
 #define PI 3.14159265
@@ -445,11 +446,11 @@ function prog(vs, fs) {
     const sh = gl.createShader(t);
     gl.shaderSource(sh, HEAD.replace('#define Q', (t === gl.FRAGMENT_SHADER ? '#define FRAG\n' : '') + '#define Q') + s);
     gl.compileShader(sh);
-    if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) { errEl.textContent = 'Shader error, see console.'; throw console.error(gl.getShaderInfoLog(sh)), 0; }
+    if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) { errEl.textContent = 'Shader error: ' + gl.getShaderInfoLog(sh); throw 0; }
     gl.attachShader(p, sh);
   }
   gl.linkProgram(p);
-  if (!gl.getProgramParameter(p, gl.LINK_STATUS)) { errEl.textContent = 'Shader link error.'; throw console.error(gl.getProgramInfoLog(p)), 0; }
+  if (!gl.getProgramParameter(p, gl.LINK_STATUS)) { errEl.textContent = 'Shader link error: ' + gl.getProgramInfoLog(p); throw 0; }
   const u = {}; for (const n of UNI) u[n] = gl.getUniformLocation(p, n);
   gl.useProgram(p); gl.uniform4fv(u.uM, M1); gl.uniform4fv(u.uN, M2); gl.uniform1i(u.uSky, 0);
   if (u.uTex) gl.uniform1iv(u.uTex, TEX.map((_, k) => k + 1)); // unit 0 is the sky cubemap
